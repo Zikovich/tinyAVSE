@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdio>
 
-const int SAMPLE_RATE = 8000;
+const int SAMPLE_RATE = 16000;
 const int FRAMES_PER_BUFFER = 256;
 
 // Audio callback function
@@ -40,7 +40,7 @@ int main() {
     // Set up PortAudio audio stream
     PaStream* audioStream;
     PaStreamParameters inputParameters;
-    inputParameters.device = 3; // Use the default input device
+    inputParameters.device = 1; // Use the default input device
     inputParameters.channelCount = 1; // Mono audio
     inputParameters.sampleFormat = paFloat32; // 32-bit floating-point format
     inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
@@ -121,7 +121,7 @@ int main() {
     std::system(command.c_str());
 
     // Remove the temporary audio file
-    std::remove("temp_audio.bin");
+    //std::remove("temp_audio.bin");
 
     return 0;
 }

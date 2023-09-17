@@ -14,10 +14,15 @@ def get_frames(path):
         success,image = vidcap.read()
     return frames_list
 
-mp4_file = "silent.mp4"
-audio = "noisy.wav"
+mp4_file = "S37890_silent.mp4"
+audio = "S37890_mixed.wav"
 
-ort_session = onnxruntime.InferenceSession("model.onnx", providers=['CPUExecutionProvider'])
+options = onnxruntime.SessionOptions()
+options.enable_profiling=True
+#options.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_DISABLE_ALL
+
+coreProvider = ['CPUExecutionProvider']#['CUDAExecutionProvider', 'CPUExecutionProvider']
+ort_session = onnxruntime.InferenceSession("model-sim.onnx",sess_options=options, providers=coreProvider)
 
 audio_data = librosa.load(audio, sr=16000)[0][np.newaxis,...]
 video_data = np.array(get_frames(mp4_file)).astype(np.float32)[np.newaxis, np.newaxis, ...]
@@ -27,3 +32,4 @@ data = {"noisy_audio": audio_data, "video_frames": video_data}
 
 enhanced = ort_session.run(None, data)[0][0]
 sf.write("enhanced.wav", enhanced, 16000)
+
